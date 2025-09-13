@@ -18,5 +18,5 @@ stages:
          backendAzureRmStorageAccountName: 'hclsa45623'
          backendAzureRmContainerName: 'tfstate'
          backendAzureRmKey: 'prod.terraform.tfstate'
-         workingDirectory: '$(Build.SourcesDirectory)/omkar'
+         workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
 
