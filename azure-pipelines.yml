@@ -1,7 +1,8 @@
-trigger: main 
-pool: HCL-infrasc
+trigger: 
+ - main 
+pool: hclom
 stages: 
- - stage: "terraform init"
+ - stage: terraform_init
    displayName: terraform init & plan
    jobs:
    - job: terraforminstall
