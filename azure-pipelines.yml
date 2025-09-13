@@ -10,8 +10,6 @@ stages:
      - task: TerraformInstaller@1
        inputs:
          terraformVersion: 'latest'
-   - job: terraforminit
-     steps:
      - task: TerraformTask@5
        inputs:
          provider: 'azurerm'
@@ -20,5 +18,5 @@ stages:
          backendAzureRmStorageAccountName: 'hclsa45623'
          backendAzureRmContainerName: 'tfstate'
          backendAzureRmKey: 'prod.terraform.tfstate'
-         workingDirectory: 'C:\Users\OMKAR SINGH\OneDrive\Documents\Downloads\azure document sof\vsts-agent-win-x64-4.260.0\_work\4\s\omkar'
+         workingDirectory: '$(Build.SourcesDirectory)/omkar'
 
