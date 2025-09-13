@@ -1,6 +1,6 @@
 trigger: 
  - main 
-pool: hclom
+pool: omkar-hcl
 stages: 
  - stage: terraform_init
    displayName: terraform init & plan
