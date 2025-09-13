@@ -1,0 +1,12 @@
+trigger: main 
+pool: HCL-infrasc
+stages: 
+ - stage: "terraform init"
+   displayName: terraform init & plan
+   jobs:
+   - job: terraforminstall
+     steps:
+     - task: TerraformInstaller@1
+       inputs:
+         terraformVersion: 'latest'
+
