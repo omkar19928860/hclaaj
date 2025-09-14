@@ -38,19 +38,13 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
-      displayName: Terraform Validate
+        workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
 
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
-        ensureBackend: true
-        backendAzureRmStorageAccountName: 'hclsa45623'
-        backendAzureRmContainerName: 'tfstate'
-        backendAzureRmKey: 'prod.terraform.tfstate'
-      displayName: Terraform Plan
 
  
