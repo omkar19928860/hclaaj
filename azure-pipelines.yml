@@ -62,6 +62,7 @@ stages:
         debug: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
+        continueOnError: true
        
 
     
