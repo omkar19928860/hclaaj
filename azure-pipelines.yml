@@ -1,58 +1,55 @@
 trigger:
   - main
 
-pool:
-  name: omkar-hcl  # Your Windows self-hosted or Microsoft-hosted agent
+pool: omkar-hcl
 
-parameters:
-  - name: terraformVersion
-    type: string
-    default: '1.5.7'
-
-  - name: terraformDir
-    type: string
-    default: '$(Build.SourcesDirectory)/omkar/parent'
 
 stages:
-# ---------------------------------------------
-# STAGE 1: Download Terraform and publish
-# ---------------------------------------------
-- stage: terraform_init
-  displayName: Terraform Install
+- stage: terraform_init_plan
+  displayName: Terraform Init, Format, Validate, Plan
   jobs:
-  - job: terraforminstall
+  - job: terraform_job
     steps:
-    - checkout: self
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
 
-    - powershell: |
-        Invoke-WebRequest -Uri "https://releases.hashicorp.com/terraform/${{ parameters.terraformVersion }}/terraform_${{ parameters.terraformVersion }}_windows_amd64.zip" -OutFile "terraform.zip"
-        Expand-Archive -Path terraform.zip -DestinationPath $(Build.ArtifactStagingDirectory)\terraform-bin -Force
-      displayName: Download & Extract Terraform
-
-    - publish: $(Build.ArtifactStagingDirectory)/terraform-bin
-      artifact: terraform-bin
-
-# ---------------------------------------------
-# STAGE 2: Use Terraform from artifact
-# ---------------------------------------------
-- stage: terraformin
-  displayName: Terraform Init
-  dependsOn: terraform_init
-  jobs:
-  - job: terraforminit
-    steps:
-    - checkout: self
-
-    - download: current
-      artifact: terraform-bin
-
-    - powershell: |
-        $env:PATH = "$(Pipeline.Workspace)\terraform-bin;$env:PATH"
-        terraform version
-        terraform init `
-          -backend-config="storage_account_name=hclsa45623" `
-          -backend-config="container_name=tfstate" `
-          -backend-config="key=prod.terraform.tfstate" `
-          -backend-config="resource_group_name=HCL-infrasc"
-      workingDirectory: '${{ parameters.terraformDir }}'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'HCL-infrasc'
+        backendAzureRmStorageAccountName: 'hclsa45623'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'prod.terraform.tfstate'
+        workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
       displayName: Terraform Init
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'fmt'
+        workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
+        commandOptions: '-check=true -recursive=true'
+      displayName: Terraform Format Check
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
+      displayName: Terraform Validate
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
+        environmentServiceNameAzureRM: 'HCL-infrasc'
+        ensureBackend: true
+        backendAzureRmStorageAccountName: 'hclsa45623'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'prod.terraform.tfstate'
+      displayName: Terraform Plan
+
+ 
