@@ -36,15 +36,13 @@ stages:
         outputTo: 'console'
         customCommand: 'fmt'
         environmentServiceNameAzureRM: 'HCL-infrasc'
-  - job: terraform_validate
-    steps:
+        
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'validate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
-  - job: terraform_plan
-    steps:
+
 
     - task: TerraformTask@5
       inputs:
