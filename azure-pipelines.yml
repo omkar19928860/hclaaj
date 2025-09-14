@@ -28,10 +28,11 @@ stages:
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
-        command: 'fmt'
-        workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
-        commandOptions: '-check=true -recursive=true'
-      displayName: Terraform Format Check
+        command: 'custom'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
+        outputTo: 'console'
+        customCommand: 'fmt'
+        environmentServiceNameAzureRM: 'HCL-infrasc'
 
     - task: TerraformTask@5
       inputs:
