@@ -25,8 +25,7 @@ stages:
         workingDirectory: '$(Build.SourcesDirectory)/omkar/parent'
       displayName: Terraform Init
 
-  - job: terraform_fmt
-    steps:
+
 
     - task: TerraformTask@5
       inputs:
