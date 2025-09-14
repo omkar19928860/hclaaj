@@ -50,4 +50,27 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
 
- 
+- stage: terraform_security_scan
+  dependsOn: terraform_init_plan
+  jobs:
+  - job: security_scan_job
+    pool: omkar-hcl
+    steps:
+
+    # tfsec install and run
+    - script: |
+        curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install.sh | bash
+        ./tfsec $(System.DefaultWorkingDirectory)/omkar/parent
+      displayName: Run tfsec scan
+
+    # tflint install and run
+    - script: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        tflint $(System.DefaultWorkingDirectory)/omkar/parent
+      displayName: Run tflint scan
+
+    # checkov install and run
+    - script: |
+        pip install checkov
+        checkov -d $(System.DefaultWorkingDirectory)/omkar/parent
+      displayName: Run checkov scan
