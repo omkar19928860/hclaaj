@@ -1,7 +1,8 @@
 trigger:
   - main
 
-pool: omkar-hcl
+pool:
+  name: omkar-hcl  # Your Windows self-hosted or Microsoft-hosted agent
 
 parameters:
   - name: terraformVersion
@@ -13,9 +14,9 @@ parameters:
     default: '$(Build.SourcesDirectory)/omkar/parent'
 
 stages:
-# ------------------------------------------------------
-# Stage 1: Install Terraform & Publish Artifact
-# ------------------------------------------------------
+# ---------------------------------------------
+# STAGE 1: Download Terraform and publish
+# ---------------------------------------------
 - stage: terraform_init
   displayName: Terraform Install
   jobs:
@@ -23,21 +24,19 @@ stages:
     steps:
     - checkout: self
 
-    - script: |
-        curl -o terraform.zip https://releases.hashicorp.com/terraform/${{ parameters.terraformVersion }}/terraform_${{ parameters.terraformVersion }}_linux_amd64.zip
-        unzip terraform.zip
-        mkdir -p $(Build.ArtifactStagingDirectory)/terraform-bin
-        mv terraform $(Build.ArtifactStagingDirectory)/terraform-bin/
+    - powershell: |
+        Invoke-WebRequest -Uri "https://releases.hashicorp.com/terraform/${{ parameters.terraformVersion }}/terraform_${{ parameters.terraformVersion }}_windows_amd64.zip" -OutFile "terraform.zip"
+        Expand-Archive -Path terraform.zip -DestinationPath $(Build.ArtifactStagingDirectory)\terraform-bin -Force
       displayName: Download & Extract Terraform
 
     - publish: $(Build.ArtifactStagingDirectory)/terraform-bin
       artifact: terraform-bin
 
-# ------------------------------------------------------
-# Stage 2: Download Artifact & Run Terraform Init
-# ------------------------------------------------------
+# ---------------------------------------------
+# STAGE 2: Use Terraform from artifact
+# ---------------------------------------------
 - stage: terraformin
-  displayName: Terraform Init & Plan
+  displayName: Terraform Init
   dependsOn: terraform_init
   jobs:
   - job: terraforminit
@@ -47,16 +46,13 @@ stages:
     - download: current
       artifact: terraform-bin
 
-    - script: |
-        chmod +x $(Pipeline.Workspace)/terraform-bin/terraform
-        export PATH=$(Pipeline.Workspace)/terraform-bin:$PATH
+    - powershell: |
+        $env:PATH = "$(Pipeline.Workspace)\terraform-bin;$env:PATH"
         terraform version
-        terraform init \
-          -backend-config="storage_account_name=hclsa45623" \
-          -backend-config="container_name=tfstate" \
-          -backend-config="key=prod.terraform.tfstate" \
+        terraform init `
+          -backend-config="storage_account_name=hclsa45623" `
+          -backend-config="container_name=tfstate" `
+          -backend-config="key=prod.terraform.tfstate" `
           -backend-config="resource_group_name=HCL-infrasc"
       workingDirectory: '${{ parameters.terraformDir }}'
       displayName: Terraform Init
-
-
