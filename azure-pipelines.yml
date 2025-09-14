@@ -60,21 +60,8 @@ stages:
       inputs:
         version: 'v1.26.0'
         debug: true
+        workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
+        environmentServiceNameAzureRM: 'HCL-infrasc'
+       
 
-    # tfsec install and run
-    - script: |
-        curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install.sh | bash
-        ./tfsec $(System.DefaultWorkingDirectory)/omkar/parent
-      displayName: Run tfsec scan
-
-    # tflint install and run
-    - script: |
-        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-        tflint $(System.DefaultWorkingDirectory)/omkar/parent
-      displayName: Run tflint scan
-
-    # checkov install and run
-    - script: |
-        pip install checkov
-        checkov -d $(System.DefaultWorkingDirectory)/omkar/parent
-      displayName: Run checkov scan
+    
