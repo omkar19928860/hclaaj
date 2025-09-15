@@ -63,11 +63,7 @@ stages:
         debug: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.x'
-        addToPath: true
-
+  
     - script: |
        tflint --init --recursive
        tflint --recursive
