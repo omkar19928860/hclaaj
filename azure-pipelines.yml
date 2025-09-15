@@ -57,12 +57,13 @@ stages:
     pool: omkar-hcl
     steps:
     - task: tfsec@1
+      continueOnError: true
       inputs:
         version: 'v1.26.0'
         debug: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
-        continueOnError: true
+        
        
 
     
