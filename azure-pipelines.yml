@@ -63,6 +63,26 @@ stages:
         debug: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+
+    - script: |
+        pip install tflint checkov
+      displayName: Install tflint and checkov
+
+    - script: |
+        tflint --init
+        tflint
+      workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
+      displayName: Run TFLint
+
+    - script: |
+        checkov -d .
+      workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
+      displayName: Run Checkov
+      continueOnError: true
         
        
 
