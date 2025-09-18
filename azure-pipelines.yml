@@ -87,6 +87,25 @@ stages:
         testResultsFiles: '**/checkovresult.xml'
         searchFolder: '$(System.DefaultWorkingDirectory)/omkar/parent'
         testRunTitle: 'Checkov Security Scan'
+  - job: Tflint
+    condition: Always()
+       
+    displayName: Tflint
+    steps:
+          - task: CmdLine@2
+            condition: Always()
+            displayName: Tflint
+            inputs:
+              script: 'tflint --chdir=. --recursive -f junit >tflintresult.xml'
+              workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+
+          - task: PublishTestResults@2
+            condition: Always()
+            displayName: Publish Result
+            inputs:
+                testResultsFormat: 'JUnit'
+                testResultsFiles: '*.xml'
 
     
 
