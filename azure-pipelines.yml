@@ -97,7 +97,7 @@ stages:
             displayName: Tflint
             inputs:
               script: 'tflint --chdir=. --recursive -f junit >tflintresult.xml'
-              workingDirectory: '$(System.DefaultWorkingDirectory)'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
 
 
           - task: PublishTestResults@2
