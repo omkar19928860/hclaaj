@@ -73,6 +73,14 @@ stages:
       inputs:
         script: 'checkov -d . -o junitxml > checkovresult.xml'
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
+    - task: PublishTestResults@2
+      condition: Always()
+      displayName: Publish Result
+      inputs:
+       testResultsFormat: 'JUnit'
+       testResultsFiles: '*.xml'
+       searchFolder: '$(System.DefaultWorkingDirectory)/omkar/parent'
+       testRunTitle: 'checov'
     
 
 
