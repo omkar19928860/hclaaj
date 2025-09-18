@@ -71,12 +71,11 @@ stages:
   # ✅ Install Checkov via pip
      - script: |
         pip install checkov
-        displayName: 'Install Checkov'
+      
 
   # ✅ Run Checkov on your Terraform directory
      - script: |
          checkov -d . -o junitxml > checkovresult.xml
-         displayName: 'Run Checkov Scan'
          workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
          continueOnError: true  # So that it doesn't fail pipeline on findings
 
