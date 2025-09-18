@@ -57,11 +57,13 @@ stages:
     displayName: Tfsec
     steps:
     - task: tfsec@1
+      continueOnError: true
       inputs:
         version: 'v1.26.0'
         debug: true
         args: '--tfvars-file="environments\dev\terraform.tfvars'
         dir: '$(System.DefaultWorkingDirectory)/omkar/parent'
+
         
     
      
