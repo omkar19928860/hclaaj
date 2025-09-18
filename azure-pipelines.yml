@@ -49,6 +49,22 @@ stages:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
+- stage: scanning
+  displayName: scanning
+  jobs:
+  - job: Tfsec
+    condition : always () 
+    displayName: Tfsec
+    steps:
+    - task: tfsec@1
+      inputs:
+        version: 'v1.26.0'
+        debug: true
+        args: '--tfvars-file="environments\dev\terraform.tfvars'
+        dir: '$(System.DefaultWorkingDirectory)/omkar/parent'
+        
+    
+     
 
 
         
