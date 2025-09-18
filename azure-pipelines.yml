@@ -67,6 +67,14 @@ stages:
     condition: Always()
     displayName: Checkov 
     steps:
+    - task: UsePythonVersion@0
+      displayName: 'Set up Python'
+      inputs:
+        versionSpec: '3.x'
+
+    - script: |
+        pip install checkov
+      displayName: 'Install Checkov'
     - task: CmdLine@2
       condition: Always()
       displayName: Checkov
