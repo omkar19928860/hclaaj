@@ -63,6 +63,19 @@ stages:
         debug: true
         args: '--tfvars-file="environments\dev\terraform.tfvars'
         dir: '$(System.DefaultWorkingDirectory)/omkar/parent'
+  - job: Checkov
+    condition: Always()
+    displayName: Checkov 
+    steps:
+    - task: CmdLine@2
+      condition: Always()
+      displayName: Checkov
+      inputs:
+        script: 'checkov -d . -o junitxml > checkovresult.xml'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
+    
+
+
 
         
     
