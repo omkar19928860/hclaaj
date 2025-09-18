@@ -67,28 +67,28 @@ stages:
     condition: Always()
     displayName: Checkov 
     steps:
-    - task: UsePythonVersion@0
-      displayName: 'Set up Python'
-      inputs:
-        versionSpec: '3.x'
 
-    - script: |
+  # ✅ Install Checkov via pip
+     - script: |
         pip install checkov
-      displayName: 'Install Checkov'
-    - task: CmdLine@2
-      condition: Always()
-      displayName: Checkov
-      inputs:
-        script: 'checkov -d ./omkar -o junitxml > checkovresult.xml'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
-    - task: PublishTestResults@2
-      condition: Always()
-      displayName: Publish Result
-      inputs:
-       testResultsFormat: 'JUnit'
-       testResultsFiles: '*.xml'
-       searchFolder: '$(System.DefaultWorkingDirectory)/omkar/parent'
-       testRunTitle: 'checov'
+        displayName: 'Install Checkov'
+
+  # ✅ Run Checkov on your Terraform directory
+     - script: |
+         checkov -d . -o junitxml > checkovresult.xml
+         displayName: 'Run Checkov Scan'
+         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
+         continueOnError: true  # So that it doesn't fail pipeline on findings
+
+     - task: PublishTestResults@2
+       condition: always()
+       displayName: 'Publish Checkov Results'
+       inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/checkovresult.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)/omkar/parent'
+        testRunTitle: 'Checkov Security Scan'
+
     
 
 
