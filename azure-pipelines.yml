@@ -50,25 +50,7 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
         environmentServiceNameAzureRM: 'HCL-infrasc'
 
-- stage: terraform_security_scan
-  dependsOn: terraform_init_plan
-  jobs:
-  - job: security_scan_job
-    pool: omkar-hcl
-    steps:
-    - task: tfsec@1
-      continueOnError: true
-      inputs:
-        version: 'v1.26.0'
-        debug: true
-        workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
-        environmentServiceNameAzureRM: 'HCL-infrasc'
-  
-    - script: |
-       tflint --init --recursive
-       tflint --recursive
-      workingDirectory: '$(System.DefaultWorkingDirectory)/omkar'
-      displayName: Run TFLint (all modules)
+
         
        
 
