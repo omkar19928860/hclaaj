@@ -71,7 +71,7 @@ stages:
       condition: Always()
       displayName: Checkov
       inputs:
-        script: 'checkov -d . -o junitxml > checkovresult.xml'
+        script: 'checkov -d ./omkar -o junitxml > checkovresult.xml'
         workingDirectory: '$(System.DefaultWorkingDirectory)/omkar/parent'
     - task: PublishTestResults@2
       condition: Always()
